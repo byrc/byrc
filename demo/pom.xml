@@ -2,15 +2,150 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--父项目的坐标。-->
+    <!--    <parent>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-parent</artifactId>
+            <version>2.0.0.RELEASE</version>
+            &lt;!&ndash; 父项目的pom.xml文件的相对路径; 默认值是../pom.xml。&ndash;&gt;
+            <relativePath />
+        </parent>-->
     <parent>
         <artifactId>byrc</artifactId>
-        <groupId>byrc</groupId>
+        <groupId>com.byrc</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>demo</groupId>
+    <groupId>com.byrc.demo</groupId>
     <artifactId>demo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
+    <url>http://maven.apache.org</url>
+    <description>This is a generator service</description>
 
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>demo.task</module>
+    </modules>
+
+    <properties>
+        <!-- 文件拷贝时的编码 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <java.version>1.8</java.version>
+
+        <!-- <spring-cloud.version>Finchley.SR2</spring-cloud.version>-->
+        <spring.version>5.1.2.RELEASE</spring.version>
+        <!--       <powermock.version>1.6.6</powermock.version>
+               <spring.version>4.3.5.RELEASE</spring.version>
+               <jackson.version>2.8.5</jackson.version>
+               <logback.version>1.2.3</logback.version>
+
+               <source.path>${basedir}/src/main/java</source.path>
+               <resources.path>${basedir}/src/main/resources</resources.path>
+               <test.source.path>${basedir}/src/test/java</test.source.path>
+               <test.resources.path>${basedir}/src/test/resources</test.resources.path>
+               <output.path>${basedir}/target</output.path>-->
+
+    </properties>
+
+    <!--声明依赖，子模块若没有显示声明，不会被引入-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Import dependency management from Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>2.1.0.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- spring-boot的web启动的jar包 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions><!-- 去掉默认配置 -->
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- 引入log4j2依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+        <!-- 如果要加载log的xxx.yml(eg:log4j2.yml)文件，加上这个才能辨认到文件 -->
+        <!--     <dependency>
+                 <groupId>com.fasterxml.jackson.dataformat</groupId>
+                 <artifactId>jackson-dataformat-yaml</artifactId>
+             </dependency>
+             -->
+        <!-- 异步日志 -->
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+        </dependency>
+    </dependencies>
+
+    <!--构建项目需要的信息-->
+    <build>
+        <!--子项目可以引用的默认插件信息。该插件配置项直到被引用时才会被解析或绑定到生命周期。给定插件的任何本地配置都会覆盖这里的配置-->
+        <pluginManagement>
+
+        </pluginManagement>
+
+        <!--使用的插件列表 。-->
+        <plugins>
+            <!--plugin元素包含描述插件所需要的信息。-->
+            <!-- 配置java版本 不配置的话默认父类配置的是1.8-->
+            <plugin>
+                <!--插件在仓库里的group ID-->
+                <groupId>org.apache.maven.plugins</groupId>
+                <!--插件在仓库里的artifact ID-->
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!--被使用的插件的版本maven：since2.0:jdk1.3，maven 3.x 默认jdk 1.5; maven 3.7:jdk1.8。-->
+                <version>3.5</version>
+                <!--是否从该插件下载Maven扩展（例如打包和类型处理器），由于性能原因，只有在真需要下载时，该元素才被设置成enabled。-->
+                <!--<extensions/>-->
+                <!--在构建生命周期中执行一组目标的配置。每个目标可能有不同的配置。-->
+                <!--<executions/>-->
+                <!--作为DOM对象的配置-->
+                <configuration>
+                    <!-- use the Java 8 language features -->
+                    <source>${java.version}</source>
+                    <!-- want the compiled classes to be compatible with JVM 1.8 -->
+                    <target>${java.version}</target>
+                    <!-- The -encoding argument for the Java compiler. -->
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <compilerArguments>
+                        <verbose />
+                        <!--maven打包pom文件<bootclasspath>节点在windows和linux下的格式差异-->
+                        <bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar</bootclasspath>
+                    </compilerArguments>
+                </configuration>
+
+            </plugin>
+
+
+        </plugins>
+
+    </build>
 
 </project>

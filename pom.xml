@@ -2,17 +2,74 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- 模型版本。声明项目描述符遵循哪一个POM模型版本 -->
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>byrc</groupId>
+    <!-- 公司或者组织的唯一标志，并且配置时生成的路径也是由此生成， 如com.byrc，maven会将该项目打成的jar包放本地路径：/com/byrc -->
+    <groupId>com.byrc</groupId>
+    <!-- 本项目的唯一ID，一个groupId下面可能多个项目，就是靠artifactId来区分的 -->
     <artifactId>byrc</artifactId>
-    <packaging>pom</packaging>
+    <!--项目当前版本，格式为:主版本.次版本.增量版本-限定版本号-->
     <version>1.0-SNAPSHOT</version>
+    <!--项目的名称, Maven产生的文档用 -->
+    <name>${project.artifactId}</name>
+    <!--项目主页的URL, Maven产生的文档用 -->
+    <url>http://maven.apache.org</url>
+    <!-- 项目的详细描述, Maven 产生的文档用。-->
+    <description>This is a generator service</description>
+
+    <!--项目产生的构件类型，例如jar、war、ear、pom等。-->
+    <packaging>pom</packaging>
+
+    <!--模块（有时称作子项目） 被构建成项目的一部分-->
     <modules>
         <module>demo</module>
         <module>framework</module>
         <module>commons</module>
     </modules>
+<!--
+    <properties>
+        &lt;!&ndash; 文件拷贝时的编码 &ndash;&gt;
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <java.version>1.8</java.version>
+
+       &lt;!&ndash; <spring-cloud.version>Finchley.SR2</spring-cloud.version>&ndash;&gt;
+        <spring.version>5.0.2.RELEASE</spring.version>
+
+        <powermock.version>1.6.6</powermock.version>
+        <spring.version>4.3.5.RELEASE</spring.version>
+        <jackson.version>2.8.5</jackson.version>
+        <logback.version>1.2.3</logback.version>
+
+        <source.path>${basedir}/src/main/java</source.path>
+        <resources.path>${basedir}/src/main/resources</resources.path>
+        <test.source.path>${basedir}/src/test/java</test.source.path>
+        <test.resources.path>${basedir}/src/test/resources</test.resources.path>
+        <output.path>${basedir}/target</output.path>
+
+
+    </properties>-->
+
+    <!--声明依赖，子模块若没有显示声明，不会被引入-->
+    <dependencyManagement>
+        <dependencies>
+            <!--log4j2 异步 添加jar-->
+            <dependency>
+                <groupId>com.lmax</groupId>
+                <artifactId>disruptor</artifactId>
+                <version>3.3.4</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!--会被子模块继承该依赖-->
+    <dependencies>
+
+    </dependencies>
+
 
 
 </project>

@@ -1,0 +1,41 @@
+
+########################################################
+### spring 相关配置
+spring:
+  application:
+    name: demo_task # 应用名称，一般就是项目名称，这个名称在SpringCloud中比较关键
+#  profiles:
+#    active: dev # 指定当前的活动配置文件，主要用于多环境多配置文件的应用中
+  mvc:
+    static-path-pattern: /** #设置静态资源的请求路径
+  resources:
+    static-locations: classpath:/static/,classpath:/public/ #指定静态资源的路径
+
+
+
+########################################################
+### web访问端口配置
+server:
+  port: 8081
+
+
+########################################################
+### actuator 监听 健康状态
+info: # 自定义属性及信息
+  head: head
+  body: body
+management:
+  server:
+    port: 8089
+  endpoints:
+    web:
+      exposure:
+        include: '*'   # 加载所有的端点，默认只加载了info、health
+    enabled-by-default:
+
+
+########################################################
+### 日志 springBoot缺省的日志实现是logback, 也可以选用其他日志实现, 比如 log4j, log4j2, 或 none, 其中none是彻底关闭日志
+logging:
+  config: classpath:config/log4j2-spring1.xml
+

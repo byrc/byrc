@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>demo</artifactId>
+        <groupId>com.byrc.demo</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.byrc.demo.task</groupId>
+    <artifactId>demo.task</artifactId>
+    <version>1.0</version>
+    <name>${project.artifactId}</name>
+    <url>http://maven.apache.org</url>
+    <description>This is a generator service</description>
+
+    <packaging>jar</packaging>
+
+    <properties>
+        <start-class>${project.groupId}.Application</start-class>
+    </properties>
+
+    <!-- 针对不同环境的profile -->
+    <!--在列的项目构建profile，如果被激活，会修改构建处理-->
+    <profiles>
+        <!-- 开发配置 -->
+        <!--根据环境参数或命令行参数激活某个构建处理-->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <!--profile默认是否激活的标志-->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- 节点名字environment是自己随意取的 -->
+                <environment>dev</environment>
+                <finalName>${artifactId}-${version}_dev</finalName>
+                <wocp.server.start.startport>9200</wocp.server.start.startport>
+                <wocp.server.start.stopport>9201</wocp.server.start.stopport>
+                <wocp.server.start.stopkey>stop</wocp.server.start.stopkey>
+                <bill.db.driver>oracle.jdbc.OracleDriver</bill.db.driver>
+                <bill.db.url>jdbc:oracle:thin:@192.168.101.23:1521:nfc</bill.db.url>
+                <bill.db.username>bill_center</bill.db.username>
+                <bill.db.passwd>bill</bill.db.passwd>
+                <shine.db.driver>oracle.jdbc.OracleDriver</shine.db.driver>
+                <shine.db.url>jdbc:oracle:thin:@192.168.101.23:1521:nfc</shine.db.url>
+                <shine.db.username>shine_center</shine.db.username>
+                <shine.db.passwd>shine</shine.db.passwd>
+            </properties>
+        </profile>
+        <!-- 生产配置 -->
+        <profile>
+            <id>prod</id>
+            <activation>
+                <!--profile默认是否激活的标志-->
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <!-- 节点名字environment是自己随意取的 -->
+                <environment>prod</environment>
+                <finalName>${artifactId}-${version}_prod</finalName>
+                <wocp.server.start.startport>9200</wocp.server.start.startport>
+                <wocp.server.start.stopport>9201</wocp.server.start.stopport>
+                <wocp.server.start.stopkey>stop</wocp.server.start.stopkey>
+                <bill.db.driver>oracle.jdbc.OracleDriver</bill.db.driver>
+                <bill.db.url>jdbc:oracle:thin:@192.168.101.23:1521:nfc</bill.db.url>
+                <bill.db.username>bill_center</bill.db.username>
+                <bill.db.passwd>bill</bill.db.passwd>
+                <shine.db.driver>oracle.jdbc.OracleDriver</shine.db.driver>
+                <shine.db.url>jdbc:oracle:thin:@192.168.101.23:1521:nfc</shine.db.url>
+                <shine.db.username>shine_center</shine.db.username>
+                <shine.db.passwd>shine</shine.db.passwd>
+            </properties>
+        </profile>
+    </profiles>
+
+    <!--构建项目需要的信息-->
+    <build>
+        <!--产生的构件的文件名，默认值是${artifactId}-${version}。-->
+        <finalName>${finalName}</finalName>
+
+        <!--使用的插件列表 。-->
+        <plugins>
+            <!--被引入的springboot项目jar 包不能引入此plugin ，否则引入此jar包的项目编译时会报 找不到程序包 的错误-->
+            <!-- 使用springboot导入(非继承), 一定要使用spring-boot-maven插件, 否则无法使用java -jar 命令 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>${start-class}</mainClass>
+                </configuration>
+            </plugin>
+            <!--把当前项目所有的依赖打包到target目录下的lib文件夹下-->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            &lt;!&ndash;已存在的Release版本不重复copy&ndash;&gt;
+                            <overWriteReleases>false</overWriteReleases>
+                            &lt;!&ndash;已存在的SnapShot版本不重复copy&ndash;&gt;
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            &lt;!&ndash;不存在或者有更新版本的依赖才copy&ndash;&gt;
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+
+            <!-- The configuration of maven-jar-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <!-- The configuration of the plugin -->
+                <configuration>
+                    <!-- Configuration of the archiver -->
+                    <archive>
+                        <!--  生成的jar中，不要包含pom.xml和pom.properties这两个文件 -->
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <!-- Manifest specific configuration -->
+                        <manifest>
+                            <!--  是否要把第三方jar放到manifest的classpath中 -->
+                            <addClasspath>true</addClasspath>
+                            <!-- 生成的manifest中classpath的前缀，因为要把第三方jar放到lib目录下，所以classpath的前缀是lib/  -->
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <!-- 应用的main class  -->
+                            <mainClass>${start-class}</mainClass>
+                        </manifest>
+                    </archive>
+                    <!-- 过滤掉不希望包含在jar中的文件 -->
+                    <excludes>
+                    <!--    <exclude>${project.basedir}/xml/*</exclude>-->
+                    </excludes>
+                    <!--生产jar的名称，默认-->
+                    <finalName>dt</finalName>
+                </configuration>
+            </plugin>
+       <!--     <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
+
+        </plugins>
+
+
+        <!--这个元素描述了项目相关的所有资源路径列表，例如和项目相关的属性文件，这些资源被包含在最终的打包文件里。-->
+        <resources>
+            <!-- 指定sdk打包后的路径 -->
+            <resource>
+                <!--描述存放资源的目录，该路径相对POM路径-->
+                <directory>lib</directory>
+                <!-- 描述了资源的目标路径。该路径相对target/classes目录（例如${project.build.outputDirectory}）-->
+                <targetPath>BOOT-INF/lib/</targetPath>
+                <!--包含的模式列表，例如**/*.xml.-->
+                <includes>
+                    <include>**/*.jar</include>
+                </includes>
+                <!--是否使用参数值代替参数名。参数值取自properties元素或者文件里配置的属性，文件在filters元素里列出。-->
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!--排除的模式列表，例如**/*.xml-->
+                <excludes>
+                    <exclude>environment/dev/**</exclude>
+                    <exclude>environment/prod/**</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources/environment/${environment}</directory>
+                <targetPath>config/</targetPath>
+            </resource>
+        </resources>
+
+
+
+    </build>
+
+
+</project>

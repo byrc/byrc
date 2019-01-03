@@ -4,13 +4,42 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>byrc</artifactId>
-        <groupId>byrc</groupId>
+        <groupId>com.byrc</groupId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>commons</groupId>
+    <groupId>com.byrc.commons</groupId>
     <artifactId>commons</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
+    <url>http://maven.apache.org</url>
+    <description>This is a generator service</description>
 
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>commons.beans</module>
+        <module>commons.utils</module>
+        <module>commons.net</module>
+        <module>commons.collections</module>
+        <module>commons.constants</module>
+        <module>commons.document</module>
+        <module>commons.picture</module>
+        <module>commons.regexp</module>
+        <module>commons.security</module>
+        <module>commons.serialize</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>1</groupId>
+                <artifactId>1</artifactId>
+            </dependency>
+        </dependencies>
+
+    </dependencyManagement>
 
 </project>
